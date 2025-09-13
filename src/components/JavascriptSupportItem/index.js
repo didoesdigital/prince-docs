@@ -24,7 +24,8 @@ const handWrittenAnnotations = [
   "exampleReturn",
   "url",
   "ext",
-  "dep"
+  "dep",
+  "__princedocstype__"
 ];
 const ignoreFields = [
   ...new Set([...generatedFields, ...handWrittenAnnotations])
@@ -44,7 +45,7 @@ const ignoreFields = [
  * @param {Object} props - the props for the component
  * @param {string[]} props.path - e.g. `[ "window", "BoxInfo", "prototype", "marginTop" ]`
  * @param {string} props.name - e.g. "marginBottom", "prototype", "NaN", "undefined", "eval", "Prince", "PDF"
- * @param {null | string} props.princetype - `null` or a type as a string e.g. `"undefined"`, `"function"`, `"object"`
+ * @param {null | string} props.princetype - the "type" as we want to document it, which will usually come from `__princetype__` in `std.json` or rarely from `__princedocstype__` in `std-annotated.json` and it will be `null` if Prince couldn't generate it or it will be a string containing the type e.g. `"undefined"`, `"function"`, `"object"`
  * @param {undefined | string} props.desc - e.g. `"The global object"`, `"See <a href='/doc/javascript#the-prince-object'>The Prince Object</a>."`
  * @param {(null|Array)} props.properties - An optional array containing properties.
  * @param {string} props.properties[0] - The item name e.g. `"JSON"`, `"stringify"`
@@ -143,12 +144,21 @@ function JavascriptSupportItem({
             ? subProperties.arguments
             : undefined;
 
+          const hasPrinceDocsType = Object.hasOwn(
+            subProperties,
+            "__princedocstype__"
+          );
+
           return (
             <JavascriptSupportItem
               key={subPath.join(".")}
               path={subPath}
               name={itemName}
-              princetype={subProperties.__princetype__}
+              princetype={
+                hasPrinceDocsType
+                  ? subProperties.__princedocstype__
+                  : subProperties.__princetype__
+              }
               desc={subProperties.desc}
               args={subPropertiesArgs}
               returns={subProperties.returns}

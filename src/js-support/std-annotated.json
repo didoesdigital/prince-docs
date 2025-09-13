@@ -2284,6 +2284,7 @@
         },
         "script": {},
         "openAction": {
+            "__princedocstype__": "string",
             "desc": "Note that Prince passes the provided values verbatim to the PDF viewer, so the user can supply values that Prince doesn't know about, but the viewer does.",
             "example": "PDF.openAction('print')"
         },
